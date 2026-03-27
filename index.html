@@ -24,25 +24,39 @@
     <!-- 메인 게임 컨테이너 -->
     <div class="relative w-full max-w-3xl bg-white shadow-xl rounded-2xl overflow-hidden border-4 border-yellow-500 flex-shrink-0">
         
-        <!-- 상단 UI (모바일에서 텍스트와 패딩 축소) -->
-        <div class="absolute top-0 left-0 w-full p-2 sm:p-4 flex justify-between items-center z-10 pointer-events-none">
-            <div class="flex gap-1 sm:gap-2">
+        <!-- 상단 UI -->
+        <div class="absolute top-0 left-0 w-full p-2 sm:p-4 flex justify-between items-start z-10 pointer-events-none">
+            <!-- 좌측 스탯 그룹 -->
+            <div class="flex flex-wrap gap-1 sm:gap-2 max-w-[70%] sm:max-w-full">
                 <div class="bg-white/90 backdrop-blur-sm px-2 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-sm sm:text-xl text-indigo-600 shadow-md border border-indigo-300">
                     Lv.<span id="levelDisplay">1</span>
                 </div>
                 <div class="bg-white/90 backdrop-blur-sm px-2 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-sm sm:text-xl text-yellow-600 shadow-md border border-yellow-300">
                     <span id="scoreDisplay">0</span> / 10
                 </div>
+                <div class="bg-white/90 backdrop-blur-sm px-2 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-sm sm:text-xl text-orange-500 shadow-md border border-orange-300">
+                    보유: <span id="inGameCoinDisplay">0</span>개
+                </div>
+                <!-- 생명력(하트) 표시 추가 -->
+                <div class="bg-white/90 backdrop-blur-sm px-2 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-sm sm:text-xl text-rose-500 shadow-md border border-rose-300 tracking-widest">
+                    <span id="lifeDisplay">❤️❤️❤️</span>
+                </div>
             </div>
-            <div class="bg-white/90 backdrop-blur-sm px-2 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-sm sm:text-xl text-red-500 shadow-md border border-red-300">
-                시간: <span id="timeDisplay">60</span>초
+            <!-- 우측 시간 & 나가기 버튼 그룹 -->
+            <div class="flex flex-col items-end gap-1 sm:gap-2">
+                <button id="btnQuitInGame" class="pointer-events-auto bg-slate-800/80 hover:bg-slate-900 text-white font-bold px-3 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-base transition-transform transform hover:scale-105 shadow-md border border-slate-600">
+                    메뉴로 🔙
+                </button>
+                <div class="bg-white/90 backdrop-blur-sm px-2 py-1 sm:px-4 sm:py-2 rounded-full font-bold text-sm sm:text-xl text-red-500 shadow-md border border-red-300">
+                    시간: <span id="timeDisplay">60</span>초
+                </div>
             </div>
         </div>
 
         <!-- 캔버스 -->
         <canvas id="gameCanvas" width="800" height="600" class="w-full h-auto bg-sky-200 block"></canvas>
 
-        <!-- 전체 오버레이 (스크롤 가능하게 처리하고 뒷배경 깔끔하게 가림) -->
+        <!-- 전체 오버레이 -->
         <div id="overlay" class="absolute inset-0 bg-slate-900/95 flex flex-col items-center justify-center z-20 text-white p-4 sm:p-6 text-center overflow-y-auto">
             
             <!-- 1. 메인 메뉴 화면 -->
@@ -51,6 +65,9 @@
                 <div class="flex flex-col gap-3 sm:gap-4 w-full max-w-[200px] sm:max-w-xs">
                     <button id="btnStart" class="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold py-2 px-6 sm:py-4 sm:px-8 rounded-full text-lg sm:text-2xl transition-transform transform hover:scale-105 shadow-xl border-2 border-yellow-200">
                         게임시작
+                    </button>
+                    <button id="btnShop" class="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-6 sm:py-3 sm:px-8 rounded-full text-base sm:text-xl transition-transform transform hover:scale-105 shadow-xl border-2 border-orange-200">
+                        🛒 상점
                     </button>
                     <button id="btnHowTo" class="bg-sky-400 hover:bg-sky-500 text-white font-bold py-2 px-6 sm:py-3 sm:px-8 rounded-full text-base sm:text-xl transition-transform transform hover:scale-105 shadow-xl border-2 border-sky-200">
                         게임방법
@@ -67,11 +84,10 @@
                 <div class="bg-black/60 p-4 sm:p-6 rounded-xl mb-4 sm:mb-6 max-w-md text-left leading-relaxed w-full">
                     <p class="mb-2 text-base sm:text-lg text-center text-yellow-200"><strong>[공중 디저트 받아먹기!]</strong></p>
                     <ol class="list-decimal pl-5 space-y-1 sm:space-y-3 text-xs sm:text-base">
-                        <li>벽에 있는 <strong>거대한 음식</strong>으로 다가가세요.</li>
                         <li>벽을 등지고 (오른쪽 보기) <strong>차기!</strong> 버튼을 누르세요.</li>
-                        <li>조각이 허공으로 떨어집니다.</li>
-                        <li><strong>재빨리 몸을 돌려(왼쪽 보기)</strong> 입으로 받아먹으세요!</li>
-                        <li><span class="text-sky-300">단계별로 10개를 먹으면 통과! (총 3단계)</span></li>
+                        <li><strong>재빨리 몸을 돌려(왼쪽 보기)</strong> 떨어지는 음식을 받아먹으세요!</li>
+                        <li><span class="text-rose-400 font-bold">주의! 하늘에서 떨어지는 돌(🪨)에 3번 맞으면 쓰러집니다!</span></li>
+                        <li><span class="text-sky-300">모은 디저트로 상점에서 뒷발 파워를 올릴 수 있어요!</span></li>
                     </ol>
                 </div>
                 <button id="btnBackFromHowTo" class="bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold py-2 px-6 sm:py-3 sm:px-10 rounded-full text-base sm:text-xl transition-transform transform hover:scale-105 shadow-xl">
@@ -79,11 +95,34 @@
                 </button>
             </div>
 
-            <!-- 3. 기록 화면 -->
+            <!-- 3. 상점 화면 -->
+            <div id="shopMenu" class="hidden flex flex-col items-center w-full my-auto">
+                <h2 class="text-2xl sm:text-3xl font-extrabold mb-4 sm:mb-6 text-orange-400">🛒 뒷발 강화 상점</h2>
+                <div class="bg-black/60 p-6 sm:p-8 rounded-xl mb-4 sm:mb-8 max-w-sm w-full text-center">
+                    <p class="text-sm sm:text-xl text-gray-300 mb-6">보유 디저트: <span id="shopCoinDisplay" class="text-yellow-400 font-bold text-2xl">0</span>개</p>
+                    
+                    <div class="bg-white/10 p-4 rounded-xl flex justify-between items-center border border-white/20">
+                        <div class="text-left">
+                            <p class="text-white font-bold text-lg">뒷발 사거리 증가</p>
+                            <p class="text-sm text-gray-300">현재 레벨: Lv.<span id="upgradeLevelDisplay">0</span></p>
+                            <p class="text-xs text-orange-300 mt-1">더 멀리서 찰 수 있어요!</p>
+                        </div>
+                        <button id="btnBuyUpgrade" class="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold py-2 px-4 rounded-lg active:scale-95 transition-transform shadow flex flex-col items-center">
+                            <span>강화하기</span>
+                            <span class="text-sm"><span id="upgradeCostDisplay">10</span>개 필요</span>
+                        </button>
+                    </div>
+                </div>
+                <button id="btnBackFromShop" class="bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold py-2 px-6 sm:py-3 sm:px-10 rounded-full text-base sm:text-xl transition-transform transform hover:scale-105 shadow-xl">
+                    뒤로 가기
+                </button>
+            </div>
+
+            <!-- 4. 기록 화면 -->
             <div id="recordMenu" class="hidden flex flex-col items-center w-full my-auto">
                 <h2 class="text-2xl sm:text-3xl font-extrabold mb-4 sm:mb-6 text-pink-300">🏆 최고 기록</h2>
                 <div class="bg-black/60 p-6 sm:p-8 rounded-xl mb-4 sm:mb-8 max-w-sm w-full text-center">
-                    <p class="text-sm sm:text-xl text-gray-300 mb-2">내가 먹은 가장 많은 디저트</p>
+                    <p class="text-sm sm:text-xl text-gray-300 mb-2">한 게임 최고 획득량</p>
                     <p class="text-4xl sm:text-6xl font-black text-yellow-400 drop-shadow-lg"><span id="bestScoreText">0</span><span class="text-2xl sm:text-3xl text-white ml-2">개</span></p>
                     <p id="clearBadge" class="mt-4 text-pink-400 font-bold text-sm sm:text-lg hidden">🎉 ALL CLEAR 마스터! 🎉</p>
                 </div>
@@ -92,7 +131,7 @@
                 </button>
             </div>
 
-            <!-- 4. 게임 결과 화면 (동적으로 내용 변경됨) -->
+            <!-- 5. 게임 결과 화면 -->
             <div id="resultMenu" class="hidden flex flex-col items-center w-full my-auto">
                 <!-- JS에서 채워짐 -->
             </div>
@@ -100,7 +139,7 @@
         </div>
     </div>
 
-    <!-- 모바일 터치 컨트롤 (여백 및 버튼 크기 조정) -->
+    <!-- 모바일 터치 컨트롤 -->
     <div class="w-full max-w-3xl flex justify-between items-end p-2 sm:p-4 mt-1 md:hidden">
         <div class="grid grid-cols-3 gap-1 sm:gap-2 opacity-90">
             <div></div>
@@ -121,11 +160,13 @@
         const levelDisplay = document.getElementById('levelDisplay');
         const scoreDisplay = document.getElementById('scoreDisplay');
         const timeDisplay = document.getElementById('timeDisplay');
+        const inGameCoinDisplay = document.getElementById('inGameCoinDisplay');
         const overlay = document.getElementById('overlay');
         
         // 메뉴 컨테이너들
         const mainMenu = document.getElementById('mainMenu');
         const howToMenu = document.getElementById('howToMenu');
+        const shopMenu = document.getElementById('shopMenu');
         const recordMenu = document.getElementById('recordMenu');
         const resultMenu = document.getElementById('resultMenu');
 
@@ -145,34 +186,26 @@
             const now = audioCtx.currentTime;
 
             if (type === 'kick') {
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(100, now);
-                osc.frequency.exponentialRampToValueAtTime(30, now + 0.1);
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.type = 'square'; osc.frequency.setValueAtTime(100, now); osc.frequency.exponentialRampToValueAtTime(30, now + 0.1);
+                gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
                 osc.start(now); osc.stop(now + 0.1);
             } else if (type === 'eat') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, now);
-                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.type = 'sine'; osc.frequency.setValueAtTime(600, now); osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
+                gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
                 osc.start(now); osc.stop(now + 0.15);
             } else if (type === 'smash') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(80, now);
-                osc.frequency.linearRampToValueAtTime(40, now + 0.2);
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(80, now); osc.frequency.linearRampToValueAtTime(40, now + 0.2);
+                gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
                 osc.start(now); osc.stop(now + 0.2);
-            } else if (type === 'levelup') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.setValueAtTime(600, now + 0.1);
-                osc.frequency.setValueAtTime(800, now + 0.2);
-                gain.gain.setValueAtTime(0.3, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+            } else if (type === 'levelup' || type === 'buy') {
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(400, now); osc.frequency.setValueAtTime(600, now + 0.1); osc.frequency.setValueAtTime(800, now + 0.2);
+                gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
                 osc.start(now); osc.stop(now + 0.4);
+            } else if (type === 'hit') {
+                // 돌에 맞았을 때 효과음
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now); osc.frequency.exponentialRampToValueAtTime(40, now + 0.2);
+                gain.gain.setValueAtTime(0.4, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now); osc.stop(now + 0.2);
             }
         }
 
@@ -182,9 +215,14 @@
         let currentLevelScore = 0; 
         let totalScore = 0; 
         let timeLeft = 60;
+        let lives = 3; // 체력
         let gameTimer = null;
         let frameCount = 0;
         const groundY = 500;
+
+        // 재화 및 업그레이드 데이터 
+        let coins = parseInt(localStorage.getItem('dogGameCoins') || '0');
+        let kickUpgradeLevel = parseInt(localStorage.getItem('dogGameKickUpgrade') || '0');
 
         const keys = { up: false, down: false, left: false, right: false, kick: false };
 
@@ -192,16 +230,31 @@
 
         const dog = {
             x: 300, y: groundY, vx: 0, vy: 0, speed: 6, jumpForce: -11,
-            gravity: 0.5, facing: -1, isGrounded: true, kickCooldown: 0, radius: 20
+            gravity: 0.5, facing: -1, isGrounded: true, kickCooldown: 0, radius: 20,
+            hitCooldown: 0 // 맞은 후 깜빡임 이펙트용
         };
 
         let fallingCheeses = [];
+        let fallingRocks = []; // 돌 배열 추가
         let particles = [];
+
+        // UI 업데이트
+        function updateUI() {
+            levelDisplay.innerText = level;
+            scoreDisplay.innerText = currentLevelScore;
+            timeDisplay.innerText = timeLeft;
+            inGameCoinDisplay.innerText = coins;
+        }
+
+        function updateLivesUI() {
+            document.getElementById('lifeDisplay').innerText = '❤️'.repeat(lives) + '🖤'.repeat(3 - lives);
+        }
 
         // 메뉴 전환
         function hideAllMenus() {
             mainMenu.classList.add('hidden');
             howToMenu.classList.add('hidden');
+            shopMenu.classList.add('hidden');
             recordMenu.classList.add('hidden');
             resultMenu.classList.add('hidden');
         }
@@ -219,16 +272,34 @@
             }
         }
 
-        function loadRecord() {
-            const best = parseInt(localStorage.getItem('dogGameBestScore') || '0');
-            document.getElementById('bestScoreText').innerText = best;
-            if (best >= 30) {
-                document.getElementById('clearBadge').classList.remove('hidden');
-            } else {
-                document.getElementById('clearBadge').classList.add('hidden');
-            }
+        // --- 상점 시스템 ---
+        function updateShopUI() {
+            document.getElementById('shopCoinDisplay').innerText = coins;
+            document.getElementById('upgradeLevelDisplay').innerText = kickUpgradeLevel;
+            const cost = 10 + (kickUpgradeLevel * 10); 
+            document.getElementById('upgradeCostDisplay').innerText = cost;
         }
 
+        document.getElementById('btnShop').addEventListener('click', () => {
+            initAudio(); updateShopUI(); hideAllMenus(); shopMenu.classList.remove('hidden');
+        });
+
+        document.getElementById('btnBuyUpgrade').addEventListener('click', () => {
+            const cost = 10 + (kickUpgradeLevel * 10);
+            if (coins >= cost) {
+                coins -= cost; kickUpgradeLevel++;
+                localStorage.setItem('dogGameCoins', coins);
+                localStorage.setItem('dogGameKickUpgrade', kickUpgradeLevel);
+                playSound('buy'); updateShopUI(); updateUI();
+            } else {
+                playSound('smash'); 
+                const btn = document.getElementById('btnBuyUpgrade');
+                btn.classList.add('bg-red-500');
+                setTimeout(() => btn.classList.remove('bg-red-500'), 200);
+            }
+        });
+
+        // --- 메뉴 버튼 리스너 ---
         document.getElementById('btnStart').addEventListener('click', () => {
             level = 1; totalScore = 0; startGame();
         });
@@ -238,17 +309,32 @@
         });
 
         document.getElementById('btnRecord').addEventListener('click', () => {
-            loadRecord(); hideAllMenus(); recordMenu.classList.remove('hidden');
+            const best = parseInt(localStorage.getItem('dogGameBestScore') || '0');
+            document.getElementById('bestScoreText').innerText = best;
+            document.getElementById('clearBadge').classList.toggle('hidden', best < 30);
+            hideAllMenus(); recordMenu.classList.remove('hidden');
         });
 
         document.getElementById('btnBackFromHowTo').addEventListener('click', showMainMenu);
+        document.getElementById('btnBackFromShop').addEventListener('click', showMainMenu);
         document.getElementById('btnBackFromRecord').addEventListener('click', showMainMenu);
+        
+        // 인게임 "메뉴로 가기" 버튼
+        document.getElementById('btnQuitInGame').addEventListener('click', () => {
+            if (!isPlaying) return;
+            isPlaying = false;
+            clearInterval(gameTimer);
+            saveRecord();
+            showMainMenu();
+        });
 
+        // --- 게임 라이프사이클 ---
         function resetGameData() {
             currentLevelScore = 0; timeLeft = 60;
-            dog.x = 300; dog.y = groundY; dog.vx = 0; dog.vy = 0; dog.facing = -1;
-            fallingCheeses = []; particles = [];
-            updateUI();
+            lives = 3; 
+            dog.x = 300; dog.y = groundY; dog.vx = 0; dog.vy = 0; dog.facing = -1; dog.hitCooldown = 0;
+            fallingCheeses = []; fallingRocks = []; particles = [];
+            updateUI(); updateLivesUI();
         }
 
         function startGame() {
@@ -258,19 +344,22 @@
             if (gameTimer) clearInterval(gameTimer);
             gameTimer = setInterval(() => {
                 if (timeLeft > 0) { timeLeft--; updateUI(); } 
-                else { endGame(); }
+                else { endGame('time'); }
             }, 1000);
             
             requestAnimationFrame(gameLoop);
         }
 
-        function endGame() {
+        // reason 파라미터를 받아 종료 원인 구분 ('time' 또는 'death')
+        function endGame(reason = 'time') {
             isPlaying = false; clearInterval(gameTimer); saveRecord();
             hideAllMenus(); overlay.classList.remove('hidden'); resultMenu.classList.remove('hidden');
             
-            // 모바일을 고려하여 텍스트 크기 반응형 적용 (text-3xl sm:text-5xl 등)
+            let titleText = reason === 'time' ? '시간 종료!' : '돌에 맞아 쓰러졌어요! 😵';
+            let titleColor = reason === 'time' ? 'text-red-500' : 'text-slate-400';
+
             resultMenu.innerHTML = `
-                <h1 class="text-3xl sm:text-5xl font-extrabold mb-2 sm:mb-4 text-red-500 drop-shadow-md">시간 종료!</h1>
+                <h1 class="text-3xl sm:text-5xl font-extrabold mb-2 sm:mb-4 ${titleColor} drop-shadow-md">${titleText}</h1>
                 <p class="text-lg sm:text-2xl mb-2">최종 도달: <strong class="text-yellow-300 text-2xl sm:text-3xl">Lv.${level}</strong></p>
                 <p class="text-base sm:text-xl mb-6 sm:mb-8 text-gray-200">총 획득 디저트: ${totalScore}개</p>
                 <div class="flex gap-2 sm:gap-4">
@@ -282,7 +371,6 @@
                     </button>
                 </div>
             `;
-            
             document.getElementById('btnRestartGame').addEventListener('click', () => { level = 1; totalScore = 0; startGame(); });
             document.getElementById('btnGoHome').addEventListener('click', showMainMenu);
         }
@@ -325,13 +413,7 @@
             if(btnHome) btnHome.addEventListener('click', showMainMenu);
         }
 
-        function updateUI() {
-            levelDisplay.innerText = level;
-            scoreDisplay.innerText = currentLevelScore;
-            timeDisplay.innerText = timeLeft;
-        }
-
-        // 키보드 및 버튼 세팅
+        // 키보드 및 버튼 이벤트
         window.addEventListener('keydown', (e) => {
             if(['ArrowUp', 'KeyW'].includes(e.code)) keys.up = true;
             if(['ArrowDown', 'KeyS'].includes(e.code)) keys.down = true;
@@ -373,6 +455,8 @@
         function update() {
             if (!isPlaying) return;
 
+            if (dog.hitCooldown > 0) dog.hitCooldown--;
+
             if (keys.left) { dog.vx = -dog.speed; dog.facing = -1; }
             else if (keys.right) { dog.vx = dog.speed; dog.facing = 1; }
             else { dog.vx = 0; }
@@ -389,21 +473,70 @@
             const headY = dog.y - 15;
             const tailY = dog.y - 5;
 
+            // 돌 무작위 스폰 로직 (레벨에 따라 스폰 확률 증가)
+            if (Math.random() < 0.015 + (level * 0.005)) {
+                fallingRocks.push({
+                    // 치즈 벽 밖(플레이어 이동 구역)에만 떨어짐
+                    x: giantCheese.w + 30 + Math.random() * (canvas.width - giantCheese.w - 60),
+                    y: -30,
+                    vy: 3 + (level * 0.5) + (Math.random() * 1.5), // 가속도 없이 일정하고 보고 피할 수 있는 속도로 수정
+                    radius: 15,
+                    rotation: Math.random() * Math.PI * 2
+                });
+            }
+
+            // 돌(장애물) 업데이트 및 충돌 검사
+            for (let i = fallingRocks.length - 1; i >= 0; i--) {
+                const r = fallingRocks[i];
+                // r.vy += dog.gravity * 0.4; (점점 빨라지는 중력 가속도 제거!)
+                r.y += r.vy; // 일정한 속도로 떨어지게 수정
+                r.rotation += 0.05;
+
+                // 강아지와 돌의 충돌 (무적 시간이 아닐 때만)
+                const distToDog = Math.hypot(dog.x - r.x, (dog.y - 10) - r.y);
+                if (distToDog < r.radius + dog.radius && dog.hitCooldown <= 0) {
+                    playSound('hit');
+                    lives--;
+                    updateLivesUI();
+                    createParticles(r.x, r.y, '#6B7280', 15); // 회색 돌 파티클
+                    fallingRocks.splice(i, 1);
+                    dog.hitCooldown = 30; // 맞고 나서 약간의 무적 시간 (깜빡임 효과)
+                    
+                    if (lives <= 0) {
+                        endGame('death');
+                        return; // 게임 업데이트 즉시 중단
+                    }
+                    continue;
+                }
+
+                // 바닥 충돌 시 파괴
+                if (r.y >= groundY + 10) {
+                    createParticles(r.x, groundY + 10, '#6B7280', 5);
+                    fallingRocks.splice(i, 1);
+                }
+            }
+
+            // 뒷발 사거리 시스템
+            const currentKickRange = 100 + (kickUpgradeLevel * 40);
+
             if (dog.kickCooldown > 0) dog.kickCooldown--;
             if (keys.kick && dog.kickCooldown <= 0) {
-                if (dog.x < giantCheese.w + 60 && dog.facing === 1) {
+                if (dog.x < giantCheese.w + currentKickRange && dog.facing === 1) {
                     playSound('kick'); dog.kickCooldown = 30; giantCheese.shakeTimer = 15;
+
+                    const distFromWall = dog.x - giantCheese.w;
+                    const dynamicVx = (distFromWall / 80) + Math.random() * 0.5;
 
                     fallingCheeses.push({
                         x: giantCheese.w + 10,
                         y: dog.y - 120 + (Math.random() * 40),
-                        vx: 1 + Math.random() * 1.5,
+                        vx: dynamicVx,
                         vy: -10 - Math.random() * 5,
                         radius: 12
                     });
 
                     let kickColor = level === 1 ? '#FCD34D' : (level === 2 ? '#93C5FD' : '#F9A8D4');
-                    createParticles(giantCheese.w, tailY, kickColor, 5);
+                    createParticles(dog.x - 30, tailY, kickColor, 5);
                 }
             }
 
@@ -413,7 +546,13 @@
 
                 const distToHead = Math.hypot(headX - c.x, headY - c.y);
                 if (distToHead < c.radius + 25 && dog.facing === -1) {
-                    playSound('eat'); currentLevelScore++; totalScore++; updateUI();
+                    playSound('eat'); 
+                    currentLevelScore++; 
+                    totalScore++; 
+                    coins++; 
+                    localStorage.setItem('dogGameCoins', coins);
+                    updateUI();
+                    
                     let particleColor = level === 1 ? '#FFD700' : (level === 2 ? '#60A5FA' : '#F472B6');
                     createParticles(c.x, c.y, particleColor, 10);
                     fallingCheeses.splice(i, 1);
@@ -475,7 +614,17 @@
             }
             ctx.restore();
 
-            ctx.font = '24px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            // 돌 그리기
+            ctx.font = '28px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            fallingRocks.forEach(r => {
+                ctx.save();
+                ctx.translate(r.x, r.y); ctx.rotate(r.rotation);
+                ctx.fillText('🪨', 0, 0);
+                ctx.restore();
+            });
+
+            // 음식 그리기
+            ctx.font = '24px Arial';
             fallingCheeses.forEach(c => {
                 ctx.save();
                 ctx.translate(c.x, c.y); ctx.rotate(frameCount * 0.1);
@@ -485,8 +634,15 @@
                 ctx.restore();
             });
 
+            // 강아지 그리기
             ctx.save();
             ctx.translate(dog.x, dog.y);
+            
+            // 피격 시 깜빡임 이펙트 (반투명)
+            if (dog.hitCooldown > 0 && Math.floor(frameCount / 4) % 2 === 0) {
+                ctx.globalAlpha = 0.4;
+            }
+
             if (!dog.isGrounded) { ctx.rotate(dog.facing * -0.2); } 
             else if (dog.kickCooldown > 20) { ctx.rotate(dog.facing * 0.3); } 
             else if (Math.abs(dog.vx) > 0) { ctx.translate(0, Math.sin(frameCount * 0.5) * 3); }
@@ -495,6 +651,7 @@
             ctx.font = '60px Arial'; ctx.textAlign = 'center'; ctx.fillText('🐕', 0, 10); 
             ctx.restore();
 
+            // 파티클
             particles.forEach(p => {
                 ctx.fillStyle = p.color; ctx.globalAlpha = p.life / 35;
                 ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fill();
@@ -509,9 +666,9 @@
             requestAnimationFrame(gameLoop);
         }
 
+        updateUI(); 
+        updateLivesUI();
         showMainMenu();
     </script>
 </body>
 </html>
-
-
